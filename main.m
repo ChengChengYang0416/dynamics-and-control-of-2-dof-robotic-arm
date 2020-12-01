@@ -45,13 +45,13 @@ for i = 1:length(t)
     gravity = [(m1+m2)*g*l1*cos(theta(1, i))+m2*g*l2*cos(theta(1, i)+theta(2, i));
                 m2*l2*g*cos(theta(1, i)+theta(2, i))];
             
-    % control input : PID control
+    % controller : PID control
     kp1 = 26;
     kd1 = 65;
-    ki1 = 5;
+    ki1 = 0.4;
     kp2 = 15;
     kd2 = 35;
-    ki2 = 2;
+    ki2 = 1;
     desired_theta = [-(1/3)*pi; (1/3)*pi];
     desired_theta_dot = [0; 0];
     
@@ -71,8 +71,15 @@ for i = 1:length(t)
         theta_error_accu(2) = -5;
     end
     
-    tau(1, i) = kp1*(desired_theta(1) - theta(1, i)) + kd1*(desired_theta_dot(1) - theta_dot(1, i)) + ki1*theta_error_accu(1);
-    tau(2, i) = kp2*(desired_theta(2) - theta(2, i)) + kd2*(desired_theta_dot(2) - theta_dot(2, i)) + ki2*theta_error_accu(2);
+    % control input
+    tau(1, i) = kp1*(desired_theta(1) - theta(1, i)) ...
+                + kd1*(desired_theta_dot(1) - theta_dot(1, i)) ...
+                + ki1*theta_error_accu(1) ...
+                + gravity(1);
+    tau(2, i) = kp2*(desired_theta(2) - theta(2, i)) ...
+                + kd2*(desired_theta_dot(2) - theta_dot(2, i)) ...
+                + ki2*theta_error_accu(2) ...
+                + gravity(2);
     
     % angular acceleration
     theta_ddot(:, i) = inertia\(tau(:, i) - cen_cor - gravity);
