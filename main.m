@@ -2,13 +2,7 @@
 % in this simulation and the controller is implemented.
 
 close all;
-
-% parameters of robot arm
-l1 = 2;
-l2 = 1;
-m1 = 1;
-m2 = 0.5;
-g = 9.81;
+init();
 
 % simulation time
 delta_t = 0.001;
@@ -34,24 +28,18 @@ gravity = zeros(2, 1);
 for i = 1:length(t)
     
     % inertia matrix
-    inertia = [(m1+m2)*l1^2+m2*l2^2+2*m2*l1*l2*cos(theta(2, i)) m2*l2^2+m2*l1*l2*cos(theta(2, i));
-                m2*l2^2+m2*l1*l2*cos(theta(2, i))               m2*l2^2];
+    inertia = [(arm1.m+arm2.m)*arm1.l^2+arm2.m*arm2.l^2+2*arm2.m*arm1.l*arm2.l*cos(theta(2, i)) arm2.m*arm2.l^2+arm2.m*arm1.l*arm2.l*cos(theta(2, i));
+                arm2.m*arm2.l^2+arm2.m*arm1.l*arm2.l*cos(theta(2, i))                           arm2.m*arm2.l^2];
             
     % centrifugal force and Coriolis force
-    cen_cor = [-2*m2*l1*l2*sin(theta(2, i))*theta_dot(1, i)*theta_dot(2, i)-m2*l1*l2*sin(theta(2, i))*theta_dot(2, i)^2;
-                m2*l1*l2*sin(theta(2, i))*theta(1, i)^2];
+    cen_cor = [-2*arm2.m*arm1.l*arm2.l*sin(theta(2, i))*theta_dot(1, i)*theta_dot(2, i)-arm2.m*arm1.l*arm2.l*sin(theta(2, i))*theta_dot(2, i)^2;
+                arm2.m*arm1.l*arm2.l*sin(theta(2, i))*theta(1, i)^2];
             
     % gravity force
-    gravity = [(m1+m2)*g*l1*cos(theta(1, i))+m2*g*l2*cos(theta(1, i)+theta(2, i));
-                m2*l2*g*cos(theta(1, i)+theta(2, i))];
+    gravity = [(arm1.m+arm2.m)*g*arm1.l*arm1.l*cos(theta(1, i))+arm2.m*g*arm2.l*cos(theta(1, i)+theta(2, i));
+                arm2.m*arm2.l*g*cos(theta(1, i)+theta(2, i))];
             
     % controller : PID control
-    kp1 = 26;
-    kd1 = 65;
-    ki1 = 0.4;
-    kp2 = 15;
-    kd2 = 35;
-    ki2 = 1;
     desired_theta = [-(1/3)*pi; (1/3)*pi];
     desired_theta_dot = [0; 0];
     
@@ -63,13 +51,13 @@ for i = 1:length(t)
     theta_error_accu(2) = error_bound(theta_error_accu(2));
     
     % control input
-    tau(1, i) = kp1*(theta_error_now(1)) ...
-                + kd1*(theta_error_dot_now(1)) ...
-                + ki1*theta_error_accu(1) ...
+    tau(1, i) = pid1.p*(theta_error_now(1)) ...
+                + pid1.d*(theta_error_dot_now(1)) ...
+                + pid1.i*theta_error_accu(1) ...
                 + gravity(1);
-    tau(2, i) = kp2*(theta_error_now(2)) ...
-                + kd2*(theta_error_dot_now(2)) ...
-                + ki2*theta_error_accu(2) ...
+    tau(2, i) = pid2.p*(theta_error_now(2)) ...
+                + pid2.d*(theta_error_dot_now(2)) ...
+                + pid2.i*theta_error_accu(2) ...
                 + gravity(2);
     
     % angular acceleration
