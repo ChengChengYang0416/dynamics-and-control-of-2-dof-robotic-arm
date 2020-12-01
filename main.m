@@ -58,18 +58,8 @@ for i = 1:length(t)
     % angle error and integral of angle error
     theta_error_now = desired_theta - theta(:, i);
     theta_error_accu = theta_error_accu + theta_error_now;
-    if theta_error_accu(1) > 5
-        theta_error_accu(1) = 5;
-    end
-    if theta_error_accu(1) < -5
-        theta_error_accu(1) = -5;
-    end
-    if theta_error_accu(2) > 5
-        theta_error_accu(2) = 5;
-    end
-    if theta_error_accu(2) < -5
-        theta_error_accu(2) = -5;
-    end
+    theta_error_accu(1) = error_bound(theta_error_accu(1));
+    theta_error_accu(2) = error_bound(theta_error_accu(2));
     
     % control input
     tau(1, i) = kp1*(desired_theta(1) - theta(1, i)) ...
