@@ -11,9 +11,9 @@ arm2.m = 0.5;
 % pid gains
 pid1.p = 26;
 pid1.d = 65;
-pid1.i = 0.4;
+pid1.i = 0.0;
 
 pid2.p = 15;
 pid2.d = 35;
-pid2.i = 1;
+pid2.i = 0.2;
 
