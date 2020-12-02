@@ -24,6 +24,10 @@ inertia = zeros(2, 2);
 cen_cor = zeros(2, 1);
 gravity = zeros(2, 1);
 
+% desired angle and desired angular velocity
+desired_theta = [-(1/3)*pi; (1/3)*pi];
+desired_theta_dot = [0; 0];
+
 % simulation start
 for i = 1:length(t)
     
@@ -38,11 +42,7 @@ for i = 1:length(t)
     % gravity force
     gravity = [(arm1.m+arm2.m)*g*arm1.l*arm1.l*cos(theta(1, i))+arm2.m*g*arm2.l*cos(theta(1, i)+theta(2, i));
                 arm2.m*arm2.l*g*cos(theta(1, i)+theta(2, i))];
-            
-    % controller : PID control
-    desired_theta = [-(1/3)*pi; (1/3)*pi];
-    desired_theta_dot = [0; 0];
-    
+
     % angle error and integral of angle error
     theta_error_now = desired_theta - theta(:, i);
     theta_error_dot_now = desired_theta_dot - theta_dot(:, i);
