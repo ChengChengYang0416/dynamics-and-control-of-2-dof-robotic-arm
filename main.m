@@ -53,14 +53,13 @@ for i = 1:length(t)
     % pid controller
     tau(:, i) = pid_controller(pid1, pid2, theta_error_now, theta_error_dot_now, theta_error_accu, gravity);
     
-    % angular acceleration
-    theta_ddot(:, i) = inertia\(tau(:, i) - cen_cor - gravity);
+    % dynamics of robotic arm
+    states = dynamics(delta_t, inertia, cen_cor, gravity, tau(:, i), theta_dot(:, i), theta(:, i));
+    theta_ddot(:, i) = states(1:2);
+    theta_dot(:, i+1) = states(3:4);
+    theta(:, i+1) = states(5:6);
     
-    % angular velocity (numerical integration)
-    theta_dot(:, i+1) = theta_dot(:, i) + theta_ddot(:, i)*delta_t;
-    
-    % angle (numerical integration)
-    theta(:, i+1) = theta(:, i) + theta_dot(:, i)*delta_t;
+    % convert radian to degree
     theta_degree(1, i+1) = rad2deg(theta(1, i+1));
     theta_degree(2, i+1) = rad2deg(theta(2, i+1));
 end
