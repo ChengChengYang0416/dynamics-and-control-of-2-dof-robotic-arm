@@ -47,8 +47,8 @@ for i = 1:length(t)
     theta_error_now = desired_theta - theta(:, i);
     theta_error_dot_now = desired_theta_dot - theta_dot(:, i);
     theta_error_accu = theta_error_accu + theta_error_now;
-    theta_error_accu(1) = error_bound(theta_error_accu(1));
-    theta_error_accu(2) = error_bound(theta_error_accu(2));
+    theta_error_accu(1) = error_bound(theta_error_accu(1), 5);
+    theta_error_accu(2) = error_bound(theta_error_accu(2), 5);
     
     % pid controller
     tau(:, i) = pid_controller(pid1, pid2, theta_error_now, theta_error_dot_now, theta_error_accu, gravity);

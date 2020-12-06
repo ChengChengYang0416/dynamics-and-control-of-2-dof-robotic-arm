@@ -1,5 +1,4 @@
-function error_bound = error_bound(err)
-    bound = 5;
+function error_bound = error_bound(err, bound)
     if err > bound
         error_bound = bound;
     elseif err < -bound
