@@ -51,7 +51,7 @@ for i = 1:length(t)
     theta_error_accu(2) = error_bound(theta_error_accu(2), 5);
     
     % pid controller
-    tau(:, i) = pid_controller(pid1, pid2, theta_error_now, theta_error_dot_now, theta_error_accu, gravity);
+    tau(:, i) = controller_pid(pid1, pid2, theta_error_now, theta_error_dot_now, theta_error_accu, gravity);
     
     % dynamics of robotic arm
     states = dynamics(delta_t, inertia, cen_cor, gravity, tau(:, i), theta_dot(:, i), theta(:, i));
