@@ -6,11 +6,10 @@ init();
 
 % simulation time
 delta_t = 0.001;
-sim_t = 50;
+sim_t = 20;
 t = 0:delta_t:sim_t;
 
 % initialize the state variables of the robot arm
-x = zeros(2, length(t));
 theta = zeros(2, length(t)+1);
 theta_dot = zeros(2, length(t)+1);
 theta_ddot = zeros(2, length(t));
@@ -25,7 +24,7 @@ cen_cor = zeros(2, 1);
 gravity = zeros(2, 1);
 
 % desired angle and desired angular velocity
-desired_theta = [-(1/3)*pi; (1/3)*pi];
+desired_theta = [-(1/3)*pi; -(2/3)*pi];
 desired_theta_dot = [0; 0];
 
 % simulation start
@@ -66,3 +65,33 @@ end
 
 % plot the theta1 , theta2, and control input
 plotter(t, theta_degree, tau);
+
+% animation
+figure(3)
+x = zeros(2, length(theta(1, :)));
+y = zeros(2, length(theta(1, :)));
+set(gca, 'Xlim', [-4.2 4.2], 'Ylim', [-4.2 1])
+grid on
+arm_1 = animatedline('Linewidth', 2, 'color', 'g');
+arm_2 = animatedline('Linewidth', 2, 'color', 'b');
+l = zeros(1, length(theta(1, :)));
+l2 = zeros(1, length(theta(1, :)));
+xlabel('X(m)')
+ylabel('Y(m)')
+title('2-D Position of Robotic Arm')
+
+for i = 1:length(theta(1, :))
+    x(1, i) = arm1.l*cos(theta(1, i));
+    y(1, i) = arm1.l*sin(theta(1, i));
+    x(2, i) = arm1.l*cos(theta(1, i)) + arm2.l*cos(theta(2, i));
+    y(2, i) = arm1.l*sin(theta(1, i)) + arm2.l*sin(theta(2, i));
+    clearpoints(arm_1);
+    clearpoints(arm_2);
+    addpoints(arm_1, 0, 0);
+    addpoints(arm_1, x(1, i), y(1, i));
+    addpoints(arm_2, x(1, i), y(1, i));
+    addpoints(arm_2, x(2, i), y(2, i));
+    drawnow
+    l(i) = sqrt(x(1, i)^2+y(1, i)^2);
+    l2(i) = sqrt((x(2, i)-x(1, i))^2+(y(2, i)-y(1, i))^2);
+end
