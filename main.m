@@ -70,6 +70,7 @@ plotter(t, theta_degree, tau);
 figure(3)
 x = zeros(2, length(theta(1, :)));
 y = zeros(2, length(theta(1, :)));
+t(1, length(theta(1, :))) = sim_t;
 set(gca, 'Xlim', [-4.2 4.2], 'Ylim', [-4.2 1])
 grid on
 arm_1 = animatedline('Linewidth', 2, 'color', 'g');
@@ -87,10 +88,12 @@ for i = 1:length(theta(1, :))
     y(2, i) = arm1.l*sin(theta(1, i)) + arm2.l*sin(theta(2, i));
     clearpoints(arm_1);
     clearpoints(arm_2);
+    delete(t_text);
     addpoints(arm_1, 0, 0);
     addpoints(arm_1, x(1, i), y(1, i));
     addpoints(arm_2, x(1, i), y(1, i));
     addpoints(arm_2, x(2, i), y(2, i));
+    t_text = text(-3.5, 0.65, "Time : "+num2str(t(i), '%4.2f')+" / "+num2str(t(end), '%4.2f'));
     drawnow
     l(i) = sqrt(x(1, i)^2+y(1, i)^2);
     l2(i) = sqrt((x(2, i)-x(1, i))^2+(y(2, i)-y(1, i))^2);
