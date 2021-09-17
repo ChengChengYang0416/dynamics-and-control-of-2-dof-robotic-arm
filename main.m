@@ -5,7 +5,7 @@ close all;
 init();
 
 % simulation time
-delta_t = 0.001;
+delta_t = 0.005;
 sim_t = 20;
 t = 0:delta_t:sim_t;
 
